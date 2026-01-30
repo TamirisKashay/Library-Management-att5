@@ -9,11 +9,18 @@ import exception.DatabaseOperationException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-public class BookRepository {
+import interfaces.CrudRepository;
+import model.BookBase;
 
-    public void create(BookBase book) {
+public class BookRepository implements CrudRepository<BookBase, Long> {
+
+
+    @Override
+    public BookBase create(BookBase book) {
         String sql = "INSERT INTO books (title, book_type, price) VALUES (?, ?, ?)";
+
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
@@ -22,9 +29,32 @@ public class BookRepository {
             pstmt.setDouble(3, 10.0);
 
             pstmt.executeUpdate();
+
+            return book; // ← ВАЖНО
         } catch (SQLException e) {
             throw new DatabaseOperationException("Error saving book: " + e.getMessage());
         }
+    }
+
+
+    @Override
+    public Optional<BookBase> findById(Long aLong) {
+        return Optional.empty();
+    }
+
+    @Override
+    public List<BookBase> findAll() {
+        return List.of();
+    }
+
+    @Override
+    public BookBase update(BookBase entity) {
+        return null;
+    }
+
+    @Override
+    public void delete(Long aLong) {
+
     }
 
     public void delete(int id) {
